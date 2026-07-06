@@ -39,6 +39,14 @@ const express = require("express");
 //
 const cors = require("cors");
 
+// WHY connectDB?
+// - This is our custom function (from src/config/db.js) that connects
+//   this backend to our MongoDB database using Mongoose.
+// - We call it once, right when the server starts, so the app has a
+//   database connection ready before it starts handling requests.
+//
+const connectDB = require("./src/config/db");
+
 const authRoutes = require("./src/routes/auth.routes");
 
 // ------------------------------------------------------------
@@ -51,6 +59,16 @@ const authRoutes = require("./src/routes/auth.routes");
 const app = express();
 
 // ------------------------------------------------------------
+// STEP 3.1: Connect to MongoDB
+// ------------------------------------------------------------
+//
+// We call connectDB() right after creating the app, and BEFORE the
+// server starts listening for requests. This way, by the time any
+// request comes in, our database connection is already being established.
+//
+connectDB();
+
+// ------------------------------------------------------------
 // STEP 4: Use middleware
 // ------------------------------------------------------------
 //
@@ -61,6 +79,19 @@ const app = express();
 // Every incoming request will get the proper CORS headers in the response.
 //
 app.use(cors());
+
+// WHY express.json()?
+// - When a client (like Postman or React) sends data in the request body
+//   as JSON (e.g. { "email": "test@test.com", "password": "123456" }),
+//   Express does NOT automatically understand it.
+// - express.json() is built-in middleware that reads the raw JSON body
+//   and parses it into a regular JavaScript object, available as req.body.
+// - Without this, req.body would be undefined in our controllers,
+//   and register/login would break.
+// - IMPORTANT: this must be added BEFORE our routes are mounted,
+//   so req.body is ready by the time a route handler runs.
+//
+app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 
