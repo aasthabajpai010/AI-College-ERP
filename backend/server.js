@@ -48,6 +48,7 @@ const cors = require("cors");
 const connectDB = require("./src/config/db");
 
 const authRoutes = require("./src/routes/auth.routes");
+const studentRoutes = require("./src/routes/student.routes");
 
 // ------------------------------------------------------------
 // STEP 3: Create the Express application
@@ -94,6 +95,11 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+
+// Mount all student-related routes under the /api/students prefix.
+// Routes defined inside student.routes.js are relative to this path —
+// e.g. GET /:id in that file is reachable at GET /api/students/:id.
+app.use("/api/students", studentRoutes);
 
 // ------------------------------------------------------------
 // STEP 5: Define a route — GET "/"
