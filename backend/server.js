@@ -50,6 +50,7 @@ const connectDB = require("./src/config/db");
 const authRoutes = require("./src/routes/auth.routes");
 const studentRoutes = require("./src/routes/student.routes");
 const departmentRoutes = require("./src/routes/department.routes");
+const attendanceRoutes = require("./src/routes/attendance.routes");
 
 // ------------------------------------------------------------
 // STEP 3: Create the Express application
@@ -106,6 +107,9 @@ app.use("/api/students", studentRoutes);
 // Routes defined inside department.routes.js are relative to this path —
 // e.g. GET / in that file is reachable at GET /api/departments.
 app.use("/api/departments", departmentRoutes);
+
+// Mount all attendance-related routes under /api/attendance.
+app.use("/api/attendance", attendanceRoutes);
 
 // ------------------------------------------------------------
 // STEP 5: Define a route — GET "/"
