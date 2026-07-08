@@ -420,7 +420,7 @@
             "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
             "url": { "raw": "{{baseUrl}}/results/{{studentId}}/cgpa", "host": ["{{baseUrl}}"], "path": ["results", "{{studentId}}", "cgpa"] }
           },
-          "description": "Good one to highlight live — shows the aggregation pipeline result (average %, CGPA on 10-point scale)."
+          "description": " !! Good one to highlight live — shows the aggregation pipeline result (average %, CGPA on 10-point scale)."
         }
       ]
     }
