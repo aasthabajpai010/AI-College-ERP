@@ -45,6 +45,7 @@ const cors = require("cors");
 // - We call it once, right when the server starts, so the app has a
 //   database connection ready before it starts handling requests.
 //
+const errorHandler = require("./src/middlewares/error.middleware");
 const connectDB = require("./src/config/db");
 
 const authRoutes = require("./src/routes/auth.routes");
@@ -115,6 +116,9 @@ app.use("/api/departments", departmentRoutes);
 // Mount all attendance-related routes under /api/attendance.
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/results", resultRoutes);
+// This must be the LAST middleware — it catches errors passed via next(error)
+// from any route above it.
+app.use(errorHandler);
 // ------------------------------------------------------------
 // STEP 5: Define a route — GET "/"
 // ------------------------------------------------------------
