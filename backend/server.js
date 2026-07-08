@@ -51,7 +51,11 @@ const authRoutes = require("./src/routes/auth.routes");
 const studentRoutes = require("./src/routes/student.routes");
 const departmentRoutes = require("./src/routes/department.routes");
 const attendanceRoutes = require("./src/routes/attendance.routes");
+const resultRoutes = require("./src/routes/result.routes");
+// ... (near your other route imports)
 
+
+// ... (near your other app.use mounts, after attendance routes)
 // ------------------------------------------------------------
 // STEP 3: Create the Express application
 // ------------------------------------------------------------
@@ -110,7 +114,7 @@ app.use("/api/departments", departmentRoutes);
 
 // Mount all attendance-related routes under /api/attendance.
 app.use("/api/attendance", attendanceRoutes);
-
+app.use("/api/results", resultRoutes);
 // ------------------------------------------------------------
 // STEP 5: Define a route — GET "/"
 // ------------------------------------------------------------
