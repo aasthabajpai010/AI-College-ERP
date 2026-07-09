@@ -53,6 +53,8 @@ const studentRoutes = require("./src/routes/student.routes");
 const departmentRoutes = require("./src/routes/department.routes");
 const attendanceRoutes = require("./src/routes/attendance.routes");
 const resultRoutes = require("./src/routes/result.routes");
+const dashboardRoutes = require("./src/routes/dashboard.routes");
+
 // ... (near your other route imports)
 
 
@@ -116,6 +118,8 @@ app.use("/api/departments", departmentRoutes);
 // Mount all attendance-related routes under /api/attendance.
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/results", resultRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
 // This must be the LAST middleware — it catches errors passed via next(error)
 // from any route above it.
 app.use(errorHandler);

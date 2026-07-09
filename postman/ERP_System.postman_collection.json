@@ -9,8 +9,8 @@
     { "key": "adminToken", "value": "" },
     { "key": "facultyToken", "value": "" },
     { "key": "studentToken", "value": "" },
-    { "key": "departmentId", "value": "" },
-    { "key": "studentId", "value": "" },
+    { "key": "departmentId", "value": "6a4cd79bd683720ad25c4bf3" },
+    { "key": "studentId", "value": "6a4f1bfe4397ed9cd9a050f4" },
     { "key": "studentUserId", "value": "" }
   ],
   "item": [
@@ -420,7 +420,39 @@
             "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
             "url": { "raw": "{{baseUrl}}/results/{{studentId}}/cgpa", "host": ["{{baseUrl}}"], "path": ["results", "{{studentId}}", "cgpa"] }
           },
-          "description": " !! Good one to highlight live — shows the aggregation pipeline result (average %, CGPA on 10-point scale)."
+          "description": "Good one to highlight live — shows the aggregation pipeline result (average %, CGPA on 10-point scale)."
+        }
+      ]
+    },
+    {
+      "name": "6. Dashboard",
+      "item": [
+        {
+          "name": "Admin Dashboard (Aggregation)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/dashboard/admin", "host": ["{{baseUrl}}"], "path": ["dashboard", "admin"] }
+          },
+          "description": "College-wide summary: totalStudents, totalDepartments, departmentWiseCount, averageAttendancePercentage, gradeDistribution. Admin/Faculty only."
+        },
+        {
+          "name": "Student Dashboard (Aggregation)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/dashboard/student/{{studentId}}", "host": ["{{baseUrl}}"], "path": ["dashboard", "student", "{{studentId}}"] }
+          },
+          "description": "One student's own summary: attendancePercentage, cgpa, totalSubjects."
+        },
+        {
+          "name": "RBAC Check - Student tries Admin Dashboard (expect 403)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/dashboard/admin", "host": ["{{baseUrl}}"], "path": ["dashboard", "admin"] }
+          },
+          "description": "Demonstrates RBAC — student role is blocked from the college-wide admin dashboard (403 Forbidden)."
         }
       ]
     }
