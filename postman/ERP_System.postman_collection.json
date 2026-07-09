@@ -10,8 +10,9 @@
     { "key": "facultyToken", "value": "" },
     { "key": "studentToken", "value": "" },
     { "key": "departmentId", "value": "6a4cd79bd683720ad25c4bf3" },
-    { "key": "studentId", "value": "6a4f1bfe4397ed9cd9a050f4" },
-    { "key": "studentUserId", "value": "" }
+    { "key": "studentId", "value": "6a4f1bfe43970d9cd9a050f4" },
+    { "key": "studentUserId", "value": "" },
+    { "key": "noticeId", "value": "" }
   ],
   "item": [
     {
@@ -453,6 +454,78 @@
             "url": { "raw": "{{baseUrl}}/dashboard/admin", "host": ["{{baseUrl}}"], "path": ["dashboard", "admin"] }
           },
           "description": "Demonstrates RBAC — student role is blocked from the college-wide admin dashboard (403 Forbidden)."
+        }
+      ]
+    },
+    {
+      "name": "7. Notices",
+      "item": [
+        {
+          "name": "Create Notice (Admin/Faculty)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.notice && data.notice._id) { pm.collectionVariables.set('noticeId', data.notice._id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Exam Schedule Released\",\n  \"content\": \"The semester exam schedule has been published. Check the portal for details.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/notices", "host": ["{{baseUrl}}"], "path": ["notices"] }
+          },
+          "description": "Creates a notice AND emits a Socket.IO 'newNotice' event to any connected client. Watch this fire live if you have a Socket.IO request connected in another tab."
+        },
+        {
+          "name": "Create Notice - Department Specific",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"CSE Department Meeting\",\n  \"content\": \"All CSE students must attend the department meeting on Friday.\",\n  \"department\": \"{{departmentId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/notices", "host": ["{{baseUrl}}"], "path": ["notices"] }
+          }
+        },
+        {
+          "name": "Get All Notices",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/notices", "host": ["{{baseUrl}}"], "path": ["notices"] }
+          },
+          "description": "Returns notices sorted newest-first, with postedBy populated (name, role)."
+        },
+        {
+          "name": "RBAC Check - Student tries Create Notice (expect 403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Unauthorized Notice\",\n  \"content\": \"This should be blocked.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/notices", "host": ["{{baseUrl}}"], "path": ["notices"] }
+          },
+          "description": "Demonstrates RBAC — student role is blocked from posting official notices (403 Forbidden)."
         }
       ]
     }

@@ -39,6 +39,20 @@ const express = require("express");
 //
 const cors = require("cors");
 
+// WHY http (Node's built-in module)?
+// - Normally, app.listen() secretly creates a raw HTTP server for us
+//   behind the scenes, and we never have to think about it.
+// - Socket.IO needs DIRECT access to that raw HTTP server BEFORE we
+//   start listening, so it can attach its own WebSocket upgrade
+//   handling to it (WebSockets start as a normal HTTP request, then
+//   "upgrade" to a persistent connection — Socket.IO needs to hook
+//   into that upgrade step).
+// - So instead of letting app.listen() hide this from us, we create
+//   the HTTP server ourselves with http.createServer(app), so we have
+//   a reference to it to hand over to Socket.IO.
+//
+const http = require("http");
+
 // WHY connectDB?
 // - This is our custom function (from src/config/db.js) that connects
 //   this backend to our MongoDB database using Mongoose.
@@ -48,6 +62,15 @@ const cors = require("cors");
 const errorHandler = require("./src/middlewares/error.middleware");
 const connectDB = require("./src/config/db");
 
+// WHY initializeSocket?
+// - This is our custom function (from src/socket/socket.js) that sets
+//   up the Socket.IO server: JWT authentication on connection, room
+//   joining, and connect/disconnect logging.
+// - We call it once, right after creating the raw HTTP server, passing
+//   that server in so Socket.IO can attach itself to it.
+//
+const { initializeSocket } = require("./src/socket/socket");
+
 const authRoutes = require("./src/routes/auth.routes");
 const studentRoutes = require("./src/routes/student.routes");
 const departmentRoutes = require("./src/routes/department.routes");
@@ -55,10 +78,13 @@ const attendanceRoutes = require("./src/routes/attendance.routes");
 const resultRoutes = require("./src/routes/result.routes");
 const dashboardRoutes = require("./src/routes/dashboard.routes");
 
-// ... (near your other route imports)
+// WHY noticeRoutes?
+// - Handles creating and fetching notices. Creating a notice also
+//   triggers a real-time Socket.IO broadcast from inside the
+//   notice.controller.js file, so connected clients see it instantly.
+//
+const noticeRoutes = require("./src/routes/notice.routes");
 
-
-// ... (near your other app.use mounts, after attendance routes)
 // ------------------------------------------------------------
 // STEP 3: Create the Express application
 // ------------------------------------------------------------
@@ -120,6 +146,11 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/results", resultRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
+// Mount all notice-related routes under /api/notices.
+// e.g. POST /api/notices creates a notice AND broadcasts it live
+// over Socket.IO; GET /api/notices fetches the normal saved list.
+app.use("/api/notices", noticeRoutes);
+
 // This must be the LAST middleware — it catches errors passed via next(error)
 // from any route above it.
 app.use(errorHandler);
@@ -145,7 +176,27 @@ app.get("/", (req, res) => {
 });
 
 // ------------------------------------------------------------
-// STEP 6: Read PORT from environment variables and start the server
+// STEP 6: Create the raw HTTP server and attach Socket.IO to it
+// ------------------------------------------------------------
+//
+// WHY not just call app.listen() like before?
+// - app.listen() would still work for all our normal REST API routes,
+//   but it hides the raw HTTP server from us, and Socket.IO needs
+//   direct access to that raw server BEFORE we start listening.
+// - So here, we explicitly wrap our Express app in Node's http module,
+//   creating "server" — this behaves exactly like what app.listen()
+//   was doing internally, just no longer hidden from us.
+//
+const server = http.createServer(app);
+
+// Now that we have the raw HTTP server, hand it to initializeSocket()
+// so Socket.IO can attach its WebSocket handling to this same server.
+// Both our REST API (Express) and our real-time layer (Socket.IO) now
+// run on top of this one single HTTP server, sharing the same port.
+initializeSocket(server);
+
+// ------------------------------------------------------------
+// STEP 7: Read PORT from environment variables and start the server
 // ------------------------------------------------------------
 //
 // process.env.PORT reads the PORT value that dotenv loaded from .env.
@@ -153,15 +204,17 @@ app.get("/", (req, res) => {
 //
 const PORT = process.env.PORT || 5000;
 
-// app.listen() starts the server and waits for incoming HTTP requests.
+// server.listen() starts the server and waits for incoming HTTP
+// requests AND incoming Socket.IO connections, since both are now
+// attached to this same "server" object.
 //
 // Arguments:
 //   1. PORT — which port number to listen on (e.g. 5000)
 //   2. Callback — runs once the server is ready
 //
-// After this runs, you can visit http://localhost:5000 in a browser
-// or call the API from a frontend app.
+// After this runs, you can visit http://localhost:5000 in a browser,
+// call the API from a frontend app, or connect a Socket.IO client.
 //
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
