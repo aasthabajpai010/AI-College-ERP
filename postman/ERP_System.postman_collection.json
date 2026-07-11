@@ -461,14 +461,15 @@
       "name": "7. Notices",
       "item": [
         {
-          "name": "Create Notice (Admin/Faculty)",
+          "name": "Create Notice (Admin/Faculty) - AI Summary + Socket.IO",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
                   "const data = pm.response.json();",
-                  "if (data.notice && data.notice._id) { pm.collectionVariables.set('noticeId', data.notice._id); }"
+                  "if (data.notice && data.notice._id) { pm.collectionVariables.set('noticeId', data.notice._id); }",
+                  "if (data.notice && data.notice.summary) { console.log('AI Summary:', data.notice.summary); } else { console.log('No summary returned - check OPENROUTER_API_KEY and server logs'); }"
                 ]
               }
             }
@@ -481,11 +482,11 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Exam Schedule Released\",\n  \"content\": \"The semester exam schedule has been published. Check the portal for details.\"\n}"
+              "raw": "{\n  \"title\": \"Exam Schedule Released\",\n  \"content\": \"The semester end examinations will begin on August 15th, 2026. All students must collect their admit cards from the examination office by August 10th. Late submissions will not be entertained under any circumstances.\"\n}"
             },
             "url": { "raw": "{{baseUrl}}/notices", "host": ["{{baseUrl}}"], "path": ["notices"] }
           },
-          "description": "Creates a notice AND emits a Socket.IO 'newNotice' event to any connected client. Watch this fire live if you have a Socket.IO request connected in another tab."
+          "description": "Creates a notice, emits a Socket.IO 'newNotice' event to any connected client, AND calls the OpenRouter API to generate an AI summary (saved in the 'summary' field). This request takes a few seconds longer than usual since it waits on the AI API call. Check the Postman Console (View > Show Postman Console) to see the logged summary or the failure reason if OPENROUTER_API_KEY is missing/invalid."
         },
         {
           "name": "Create Notice - Department Specific",
@@ -509,7 +510,7 @@
             "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
             "url": { "raw": "{{baseUrl}}/notices", "host": ["{{baseUrl}}"], "path": ["notices"] }
           },
-          "description": "Returns notices sorted newest-first, with postedBy populated (name, role)."
+          "description": "Returns notices sorted newest-first, with postedBy populated (name, role). Check the most recent notice's 'summary' field here to confirm the AI-generated summary was saved correctly after creation."
         },
         {
           "name": "RBAC Check - Student tries Create Notice (expect 403)",

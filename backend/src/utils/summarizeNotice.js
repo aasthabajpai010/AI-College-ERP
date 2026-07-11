@@ -18,7 +18,7 @@ const summarizeNotice = async (noticeContent) => {
       },
       body: JSON.stringify({
         // Free-tier-friendly model — swap this for any model OpenRouter supports.
-        model: "meta-llama/llama-3.1-8b-instruct:free",
+       model: "google/gemma-4-31b-it:free",
         messages: [
           {
             role: "user",
