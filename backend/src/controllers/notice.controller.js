@@ -1,17 +1,26 @@
 // ============================================================
 // NOTICE CONTROLLER
 // ============================================================
-// Handles creating and fetching notices. The interesting part is
-// createNotice — after saving to MongoDB through the normal flow,
-// it ALSO emits a Socket.IO event, so any connected client gets
-// the new notice pushed to them immediately, without refreshing
-// or re-calling the API.
+// Handles creating and fetching notices.
+//
+// createNotice does THREE things, in this order:
+// 1. Saves the notice normally to MongoDB (source of truth)
+// 2. Emits a Socket.IO event so connected clients see it instantly
+// 3. Calls the OpenRouter API to generate a short AI summary, and
+//    updates the notice with that summary once it's ready
+//
+// Steps 2 and 3 are both wrapped in their own try/catch blocks,
+// SEPARATE from step 1's try/catch. This is deliberate: if Socket.IO
+// or the AI API fails, the notice itself is already safely saved —
+// we don't want a third-party API hiccup to make the whole request
+// fail when the core action (saving the notice) already succeeded.
 
 const Notice = require("../models/notice.model");
 const { getIO } = require("../socket/socket");
+const summarizeNotice = require("../utils/summarizeNotice");
 
 /**
- * @desc    Create a new notice and broadcast it in real-time
+ * @desc    Create a new notice, broadcast it live, and generate an AI summary
  * @route   POST /api/notices
  * @access  Admin, Faculty
  */
@@ -19,9 +28,11 @@ const createNotice = async (req, res) => {
   try {
     const { title, content, department } = req.body;
 
-    // Step 1: Save the notice normally, exactly like any other create operation.
-    // This is the "source of truth" — even if a client is offline right now,
-    // they'll see this notice next time they call GET /api/notices.
+    // ------------------------------------------------------------
+    // STEP 1: Save the notice normally.
+    // This happens FIRST and independently of the AI/Socket.IO steps
+    // below, so even if those fail, the notice itself is safe.
+    // ------------------------------------------------------------
     const notice = await Notice.create({
       title,
       content,
@@ -29,19 +40,36 @@ const createNotice = async (req, res) => {
       department: department || null,
     });
 
-    // Step 2: Emit a real-time event to connected clients.
-    // Wrapped in try/catch separately — if Socket.IO somehow fails,
-    // we don't want that to break the notice creation itself, since
-    // the notice is already safely saved in the database at this point.
+    // ------------------------------------------------------------
+    // STEP 2: Emit a real-time Socket.IO event immediately.
+    // We do this BEFORE waiting for the AI summary, so students get
+    // the notice pushed to them right away — they don't need to wait
+    // for the (potentially slow) AI call just to see the notice exists.
+    // ------------------------------------------------------------
     try {
       const io = getIO();
-      io.emit("newNotice", notice); // broadcasts to EVERY connected client
-      // Alternative if we wanted to target one department's room only:
-      // io.to(department).emit("newNotice", notice);
+      io.emit("newNotice", notice);
     } catch (socketError) {
       console.error("Socket emit failed:", socketError.message);
-      // Deliberately not returning an error response here —
-      // the notice still saved successfully via the normal REST flow.
+      // Not returning an error response — the notice already saved fine.
+    }
+
+    // ------------------------------------------------------------
+    // STEP 3: Call OpenRouter to generate a short AI summary.
+    // WHY AFTER sending the response below, conceptually?
+    // In this simple version, we still await it here so the summary
+    // is included in the API response the caller sees — but the
+    // summarizeNotice() function itself already handles failure
+    // gracefully (returns null instead of throwing), so a failed AI
+    // call still lets this whole request complete successfully.
+    // ------------------------------------------------------------
+    const summary = await summarizeNotice(content);
+
+    if (summary) {
+      // Only write to the database again if we actually got a summary —
+      // no point doing an extra DB write when there's nothing new to save.
+      notice.summary = summary;
+      await notice.save();
     }
 
     res.status(201).json({
@@ -49,6 +77,9 @@ const createNotice = async (req, res) => {
       notice,
     });
   } catch (error) {
+    // This outer catch only fires for failures in STEP 1 (the actual
+    // notice creation) — a genuine problem, unlike Socket.IO/AI failures
+    // above which are handled locally and don't reach here.
     res.status(500).json({
       success: false,
       message: "Internal server error",
