@@ -1,10 +1,6 @@
 // ============================================================
 // NOTICE MODEL
 // ============================================================
-// Stores announcements/notices posted by Admin or Faculty.
-// When a new notice is created, the controller will also emit a
-// Socket.IO event so connected clients see it instantly.
-
 const mongoose = require("mongoose");
 
 const noticeSchema = new mongoose.Schema(
@@ -17,12 +13,19 @@ const noticeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    // NEW: AI-generated short summary of the content, filled in
+    // asynchronously after creation via the OpenRouter API call.
+    // Starts as null — if the AI call fails, it just stays null
+    // instead of blocking notice creation.
+    summary: {
+      type: String,
+      default: null,
+    },
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    // Optional: restrict a notice to one department, or leave null for "everyone"
     department: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Department",
