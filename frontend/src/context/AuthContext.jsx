@@ -28,12 +28,14 @@ export const AuthProvider = ({ children }) => {
   // On first mount, confirm we're not in a broken state (e.g. a user
   // object exists but the token got cleared some other way).
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setUser(null);
-    }
-    setLoading(false);
-  }, []);
+  const token = localStorage.getItem("token");
+  const storedUser = localStorage.getItem("user");
+  
+  if (!token || !storedUser) {
+    setUser(null);
+  }
+  setLoading(false);
+}, []);
 
   // ------------------------------------------------------------
   // login() — called by the Login page after a successful API call.
