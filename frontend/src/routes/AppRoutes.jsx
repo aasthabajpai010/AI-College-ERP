@@ -9,20 +9,15 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/Login";
 import ProtectedRoute from "../components/ProtectedRoute";
+import StudentDashboard from "../pages/StudentDashboard"; // NEW
 
-// TEMPORARY placeholder components — will be replaced by the real
-// AdminDashboard.jsx, FacultyDashboard.jsx, StudentDashboard.jsx
-// files once we reach that build step.
 const AdminDashboardPlaceholder = () => <h1 className="p-8 text-2xl">Admin Dashboard (placeholder)</h1>;
 const FacultyDashboardPlaceholder = () => <h1 className="p-8 text-2xl">Faculty Dashboard (placeholder)</h1>;
-const StudentDashboardPlaceholder = () => <h1 className="p-8 text-2xl">Student Dashboard (placeholder)</h1>;
 
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Root path redirects straight to login for now */}
       <Route path="/" element={<Navigate to="/login" replace />} />
-
       <Route path="/login" element={<Login />} />
 
       <Route
@@ -47,7 +42,7 @@ const AppRoutes = () => {
         path="/student/dashboard"
         element={
           <ProtectedRoute allowedRoles={["student"]}>
-            <StudentDashboardPlaceholder />
+            <StudentDashboard />
           </ProtectedRoute>
         }
       />
