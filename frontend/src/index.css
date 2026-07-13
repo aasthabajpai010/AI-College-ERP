@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+@theme {
+  --color-ink: #1B2333;
+  --color-ink-light: #2A3547;
+  --color-paper: #FAF9F6;
+  --color-maroon: #8C2F39;
+  --color-maroon-light: #A8434E;
+  --color-maroon-dark: #6E2029;
+  --color-role-admin: #8C2F39;
+  --color-role-faculty: #3D6B5C;
+  --color-role-student: #2C5C8C;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+}
