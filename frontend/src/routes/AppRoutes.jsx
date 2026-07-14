@@ -10,9 +10,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/Login";
 import ProtectedRoute from "../components/ProtectedRoute";
 import StudentDashboard from "../pages/StudentDashboard";
-import AdminDashboard from "../pages/AdminDashboard"; // NEW
-
-const FacultyDashboardPlaceholder = () => <h1 className="p-8 text-2xl">Faculty Dashboard (placeholder)</h1>;
+import AdminDashboard from "../pages/AdminDashboard";
+import FacultyDashboard from "../pages/FacultyDashboard";
 
 const AppRoutes = () => {
   return (
@@ -33,7 +32,7 @@ const AppRoutes = () => {
         path="/faculty/dashboard"
         element={
           <ProtectedRoute allowedRoles={["faculty"]}>
-            <FacultyDashboardPlaceholder />
+            <FacultyDashboard />
           </ProtectedRoute>
         }
       />
