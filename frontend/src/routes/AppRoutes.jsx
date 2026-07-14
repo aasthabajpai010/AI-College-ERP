@@ -16,12 +16,15 @@ import Attendance from "../pages/Attendance"; // NEW import
 import Results from "../pages/Results"; 
 import Students from "../pages/Students";
 import Notices from "../pages/Notices"; 
+import Register from "../pages/Register"; 
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
 
       <Route
         path="/admin/dashboard"

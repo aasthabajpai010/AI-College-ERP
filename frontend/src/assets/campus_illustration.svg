@@ -1,0 +1,39 @@
+<svg width="480" height="480" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Campus illustration</title>
+<desc>A flat illustration of a college campus building with a graduate figure and a book, in navy and maroon tones.</desc>
+
+<circle cx="240" cy="240" r="200" fill="#242E42"/>
+<circle cx="240" cy="240" r="150" fill="#2A3547"/>
+
+<rect x="120" y="220" width="240" height="140" rx="4" fill="#F1EFE8"/>
+<polygon points="110,220 240,150 370,220" fill="#8C2F39"/>
+<rect x="225" y="150" width="30" height="30" fill="#8C2F39"/>
+
+<rect x="150" y="250" width="35" height="50" rx="2" fill="#A8434E"/>
+<rect x="200" y="250" width="35" height="50" rx="2" fill="#A8434E"/>
+<rect x="245" y="250" width="35" height="50" rx="2" fill="#A8434E"/>
+<rect x="295" y="250" width="35" height="50" rx="2" fill="#A8434E"/>
+
+<rect x="220" y="310" width="40" height="50" rx="2" fill="#1B2333"/>
+
+<circle cx="150" cy="330" r="90" fill="#F1EFE8" opacity="0.06"/>
+
+<g transform="translate(90,300)">
+<circle cx="0" cy="0" r="18" fill="#F1EFE8"/>
+<rect x="-16" y="16" width="32" height="42" rx="10" fill="#8C2F39"/>
+<polygon points="-20,10 0,-4 20,10 0,4" fill="#1B2333"/>
+<rect x="-4" y="-10" width="8" height="10" fill="#1B2333"/>
+</g>
+
+<g transform="translate(370,300)">
+<rect x="-22" y="0" width="44" height="34" rx="3" fill="#F1EFE8"/>
+<rect x="-22" y="0" width="44" height="6" fill="#8C2F39"/>
+<line x1="-14" y1="14" x2="14" y2="14" stroke="#2A3547" stroke-width="1.5"/>
+<line x1="-14" y1="22" x2="14" y2="22" stroke="#2A3547" stroke-width="1.5"/>
+</g>
+
+<circle cx="80" cy="120" r="4" fill="#F1EFE8" opacity="0.5"/>
+<circle cx="400" cy="150" r="3" fill="#F1EFE8" opacity="0.4"/>
+<circle cx="360" cy="90" r="5" fill="#8C2F39" opacity="0.6"/>
+<circle cx="110" cy="80" r="3" fill="#8C2F39" opacity="0.5"/>
+</svg>
