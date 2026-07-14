@@ -12,6 +12,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import StudentDashboard from "../pages/StudentDashboard";
 import AdminDashboard from "../pages/AdminDashboard";
 import FacultyDashboard from "../pages/FacultyDashboard";
+import Attendance from "../pages/Attendance"; // NEW import
+import Results from "../pages/Results"; 
 
 const AppRoutes = () => {
   return (
@@ -45,8 +47,29 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+
+      <Route
+        path="/attendance"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
+            <Attendance />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+  path="/results"
+  element={
+    <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
+      <Results />
+    </ProtectedRoute>
+  }
+/>
     </Routes>
   );
 };
+
+
 
 export default AppRoutes;
