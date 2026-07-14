@@ -14,6 +14,7 @@ import AdminDashboard from "../pages/AdminDashboard";
 import FacultyDashboard from "../pages/FacultyDashboard";
 import Attendance from "../pages/Attendance"; // NEW import
 import Results from "../pages/Results"; 
+import Students from "../pages/Students";
 
 const AppRoutes = () => {
   return (
@@ -65,7 +66,17 @@ const AppRoutes = () => {
       <Results />
     </ProtectedRoute>
   }
-/>  </Routes>
+/>
+<Route
+  path="/students"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <Students />
+    </ProtectedRoute>
+  }
+/>
+
+  </Routes>
   );
 };
 
