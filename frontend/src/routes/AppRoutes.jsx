@@ -65,8 +65,7 @@ const AppRoutes = () => {
       <Results />
     </ProtectedRoute>
   }
-/>
-    </Routes>
+/>  </Routes>
   );
 };
 
