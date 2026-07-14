@@ -6,14 +6,25 @@
 // prepend newly-created notices to the list in real time, without
 // needing a page refresh or re-fetch.
 
-import { useState, useEffect, useContext, useCallback } from "react";
+// ============================================================
+// NOTICES PAGE
+// ============================================================
+// Shows the full notice list (with AI-generated summaries) and,
+// for Faculty/Admin, a form to post a new one. Real-time updates
+// now come from NotificationContext (set up globally in App.jsx)
+// instead of this page opening its own separate socket connection —
+// this way the SAME real-time data also powers the Navbar's bell
+// icon, no matter which page the user is on.
+
+import { useState, useEffect, useContext } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import { AuthContext } from "../context/AuthContext";
+import { NotificationContext } from "../context/NotificationContext";
 import { getAllNotices, createNotice } from "../services/noticeService";
-import useSocket from "../hooks/useSocket";
 
 const Notices = () => {
   const { user } = useContext(AuthContext);
+  const { notifications } = useContext(NotificationContext);
   const isFacultyOrAdmin = user.role === "admin" || user.role === "faculty";
 
   const [notices, setNotices] = useState([]);
@@ -38,17 +49,20 @@ const Notices = () => {
     fetchNotices();
   }, []);
 
-  // useCallback keeps this function reference stable across re-renders —
-  // useSocket's useEffect depends on this function, so without
-  // useCallback, a new function reference on every render would cause
-  // the socket to disconnect and reconnect constantly.
-  const handleNewNotice = useCallback((notice) => {
-    // Prepend the new notice to the top of the list — this is what
-    // makes it appear INSTANTLY without waiting for a re-fetch.
-    setNotices((prev) => [notice, ...prev]);
-  }, []);
-
-  useSocket(handleNewNotice);
+  // Whenever NotificationContext's global list grows (a new real-time
+  // notice arrived), merge any notices we don't already have into our
+  // local list. This keeps this page in sync with the bell icon,
+  // without this page needing its own socket connection.
+  useEffect(() => {
+    if (notifications.length > 0) {
+      setNotices((prev) => {
+        const newOnes = notifications.filter(
+          (n) => !prev.some((p) => p._id === n._id)
+        );
+        return newOnes.length > 0 ? [...newOnes, ...prev] : prev;
+      });
+    }
+  }, [notifications]);
 
   const handleCreateNotice = async (e) => {
     e.preventDefault();
@@ -57,9 +71,6 @@ const Notices = () => {
       await createNotice(formData.title, formData.content);
       setFormMessage("Notice posted successfully.");
       setFormData({ title: "", content: "" });
-      // NOTE: we don't manually add it to the list here — the
-      // Socket.IO event (handleNewNotice above) does that for us,
-      // for EVERY connected client including the one who posted it.
     } catch (err) {
       setFormMessage(err.response?.data?.message || "Failed to post notice.");
     }
@@ -120,8 +131,6 @@ const Notices = () => {
         </div>
       )}
 
-      {/* Notice list — newest first, since backend sorts this way
-          and new real-time notices are prepended client-side too */}
       <div className="space-y-4">
         {notices.length === 0 ? (
           <p className="font-body text-sm text-ink/50">No notices yet.</p>
@@ -140,7 +149,6 @@ const Notices = () => {
                 </span>
               </div>
 
-              {/* AI summary, shown as a highlighted callout if present */}
               {n.summary && (
                 <div className="bg-role-student/10 border border-role-student/20 rounded px-3 py-2 mb-3">
                   <p className="font-body text-xs text-role-student font-medium mb-1">

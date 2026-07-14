@@ -4,6 +4,12 @@
 // Split-screen layout: illustration + welcome copy on the left,
 // registration form on the right. Matches the same visual language
 // as Login (navy/maroon/serif) so the two feel like one product.
+// ============================================================
+// REGISTER PAGE
+// ============================================================
+// Split-screen layout: illustration + welcome copy on the left,
+// registration form on the right. Matches the same visual language
+// as Login (navy/maroon/serif) so the two feel like one product.
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -40,9 +46,6 @@ const Register = () => {
     setLoading(true);
     try {
       await registerUser(formData.name, formData.email, formData.password, formData.role);
-      // After successful registration, send them to login rather than
-      // auto-logging in — keeps the auth flow's entry point singular
-      // and simple (only Login ever writes to AuthContext).
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.");
@@ -55,7 +58,7 @@ const Register = () => {
     <div className="min-h-screen flex">
       {/* ---------------- LEFT PANEL ---------------- */}
       <div className="hidden lg:flex lg:w-1/2 bg-ink flex-col items-center justify-center p-12 relative overflow-hidden">
-        <img src={campusIllustration} alt="" className="w-80 h-80 mb-8" />
+        <img src={campusIllustration} alt="" className="w-80 h-80 mb-8 animate-fade-in" />
 
         <h1 className="font-display text-3xl font-semibold text-paper text-center mb-3">
           Welcome to College ERP
@@ -64,7 +67,6 @@ const Register = () => {
           Manage academics, attendance, results, and more — all in one place.
         </p>
 
-        {/* Feature highlights */}
         <div className="flex gap-8">
           <div className="text-center">
             <div className="w-10 h-10 rounded-full bg-maroon/20 border border-maroon/40 flex items-center justify-center mx-auto mb-2">
@@ -89,7 +91,7 @@ const Register = () => {
 
       {/* ---------------- RIGHT PANEL: FORM ---------------- */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-paper p-8">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm animate-fade-in-up">
           <h2 className="font-display text-2xl font-semibold text-ink mb-1">
             Create your account
           </h2>
@@ -173,7 +175,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-maroon text-white py-2 rounded font-body font-medium hover:bg-maroon-dark transition-colors disabled:opacity-50 mt-2"
+              className="w-full bg-maroon text-white py-2 rounded font-body font-medium hover:bg-maroon-dark transition-all hover:scale-[1.02] disabled:opacity-50 mt-2"
             >
               {loading ? "Creating account..." : "Register"}
             </button>
