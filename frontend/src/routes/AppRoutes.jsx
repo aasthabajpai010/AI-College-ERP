@@ -15,6 +15,7 @@ import FacultyDashboard from "../pages/FacultyDashboard";
 import Attendance from "../pages/Attendance"; // NEW import
 import Results from "../pages/Results"; 
 import Students from "../pages/Students";
+import Notices from "../pages/Notices"; 
 
 const AppRoutes = () => {
   return (
@@ -72,6 +73,14 @@ const AppRoutes = () => {
   element={
     <ProtectedRoute allowedRoles={["admin"]}>
       <Students />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/notices"
+  element={
+    <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
+      <Notices />
     </ProtectedRoute>
   }
 />
