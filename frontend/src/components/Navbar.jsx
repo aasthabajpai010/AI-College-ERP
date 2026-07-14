@@ -1,16 +1,24 @@
+// ============================================================
+// NAVBAR
+// ============================================================
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-// ... roleBadgeStyles same rahega ...
+// YE OBJECT COMPONENT FUNCTION SE BAHAR, TOP PE HONA CHAHIYE
+const roleBadgeStyles = {
+  admin: "bg-role-admin/10 text-role-admin border-role-admin/30",
+  faculty: "bg-role-faculty/10 text-role-faculty border-role-faculty/30",
+  student: "bg-role-student/10 text-role-student border-role-student/30",
+};
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // clears token + user from context/localStorage
-    navigate("/login"); // immediately redirect, don't wait for next navigation
+    logout();
+    navigate("/login");
   };
 
   return (
