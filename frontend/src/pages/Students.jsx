@@ -4,9 +4,19 @@
 // Lists all students (populated with user + department info) and
 // provides a form to create a new student profile.
 
+// ============================================================
+// STUDENTS PAGE (Admin only)
+// ============================================================
+// Lists all students (populated with user + department info) and
+// provides a form to create a new student profile.
+//
+// VISUAL POLISH: icon on section headers, skeleton loading table,
+// friendlier empty state.
+
 import { useState, useEffect } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import { getAllStudents, createStudent } from "../services/studentService";
+import { UserPlus, Users } from "lucide-react";
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -24,9 +34,6 @@ const Students = () => {
   });
   const [formMessage, setFormMessage] = useState("");
 
-  // Extracted into its own function (not just inline in useEffect)
-  // so we can call it AGAIN after successfully creating a student —
-  // this refreshes the table without needing a full page reload.
   const fetchStudents = async () => {
     try {
       const data = await getAllStudents();
@@ -40,6 +47,7 @@ const Students = () => {
 
   useEffect(() => {
     fetchStudents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCreateStudent = async (e) => {
@@ -60,7 +68,7 @@ const Students = () => {
         phone: "",
         address: "",
       });
-      fetchStudents(); // re-fetch so the new student shows up immediately
+      fetchStudents();
     } catch (err) {
       setFormMessage(err.response?.data?.message || "Failed to create student.");
     }
@@ -69,7 +77,8 @@ const Students = () => {
   if (loading) {
     return (
       <DashboardLayout>
-        <p className="font-body text-ink/50">Loading...</p>
+        <div className="bg-white rounded-lg border border-ink/10 p-6 h-56 animate-pulse mb-8"></div>
+        <div className="bg-white rounded-lg border border-ink/10 p-6 h-40 animate-pulse"></div>
       </DashboardLayout>
     );
   }
@@ -86,11 +95,11 @@ const Students = () => {
         </div>
       )}
 
-      {/* Create form */}
       <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 mb-8">
-        <h2 className="font-display text-lg font-semibold text-ink mb-4">
-          Add Student
-        </h2>
+        <div className="flex items-center gap-2 mb-4">
+          <UserPlus className="text-maroon" size={20} strokeWidth={1.75} />
+          <h2 className="font-display text-lg font-semibold text-ink">Add Student</h2>
+        </div>
         <form onSubmit={handleCreateStudent} className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <input
             type="text"
@@ -98,7 +107,7 @@ const Students = () => {
             value={formData.user}
             onChange={(e) => setFormData({ ...formData, user: e.target.value })}
             required
-            className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+            className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
           />
           <input
             type="text"
@@ -106,7 +115,7 @@ const Students = () => {
             value={formData.department}
             onChange={(e) => setFormData({ ...formData, department: e.target.value })}
             required
-            className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+            className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
           />
           <input
             type="text"
@@ -114,7 +123,7 @@ const Students = () => {
             value={formData.rollNumber}
             onChange={(e) => setFormData({ ...formData, rollNumber: e.target.value })}
             required
-            className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+            className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
           />
           <input
             type="number"
@@ -124,7 +133,7 @@ const Students = () => {
             value={formData.semester}
             onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
             required
-            className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+            className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
           />
           <input
             type="text"
@@ -132,25 +141,25 @@ const Students = () => {
             value={formData.section}
             onChange={(e) => setFormData({ ...formData, section: e.target.value })}
             required
-            className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+            className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
           />
           <input
             type="text"
             placeholder="Phone"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+            className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
           />
           <input
             type="text"
             placeholder="Address"
             value={formData.address}
             onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-            className="border border-ink/15 rounded px-3 py-2 font-body text-sm col-span-2"
+            className="border border-ink/15 rounded px-3 py-2 font-body text-sm col-span-2 focus:outline-none focus:ring-2 focus:ring-maroon/40"
           />
           <button
             type="submit"
-            className="bg-maroon text-white px-4 py-2 rounded font-body text-sm hover:bg-maroon-dark transition-colors col-span-2 md:col-span-4"
+            className="bg-maroon text-white px-4 py-2 rounded font-body text-sm hover:bg-maroon-dark hover:scale-[1.02] transition-all col-span-2 md:col-span-4"
           >
             Create Student
           </button>
@@ -160,13 +169,17 @@ const Students = () => {
         )}
       </div>
 
-      {/* Students table */}
       <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6">
-        <h2 className="font-display text-lg font-semibold text-ink mb-4">
-          All Students ({students.length})
-        </h2>
+        <div className="flex items-center gap-2 mb-4">
+          <Users className="text-maroon" size={20} strokeWidth={1.75} />
+          <h2 className="font-display text-lg font-semibold text-ink">
+            All Students ({students.length})
+          </h2>
+        </div>
         {students.length === 0 ? (
-          <p className="font-body text-sm text-ink/50">No students yet.</p>
+          <div className="text-center py-8">
+            <p className="font-body text-sm text-ink/40">No students yet.</p>
+          </div>
         ) : (
           <table className="w-full text-left font-body text-sm">
             <thead>
@@ -180,7 +193,7 @@ const Students = () => {
             </thead>
             <tbody>
               {students.map((s) => (
-                <tr key={s._id} className="border-b border-ink/5">
+                <tr key={s._id} className="border-b border-ink/5 hover:bg-paper/50 transition-colors">
                   <td className="py-2 text-ink">{s.rollNumber}</td>
                   <td className="py-2 text-ink">{s.user?.name}</td>
                   <td className="py-2 text-ink">{s.department?.name}</td>

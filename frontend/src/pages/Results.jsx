@@ -5,11 +5,22 @@
 // - Faculty/Admin: a form to add marks for a subject
 // - Student: their own results list + CGPA, read-only
 
+// ============================================================
+// RESULTS PAGE
+// ============================================================
+// Same role-branching pattern as Attendance.jsx:
+// - Faculty/Admin: a form to add marks for a subject
+// - Student: their own results list + CGPA, read-only
+//
+// VISUAL POLISH: icon-in-circle CGPA card, icons on section headers,
+// skeleton loading, and friendlier empty states.
+
 import { useState, useEffect, useContext } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import { AuthContext } from "../context/AuthContext";
 import { getMyProfile } from "../services/studentService";
 import { addResult, getStudentResults, getCGPA } from "../services/resultService";
+import { Award, PlusCircle, BookOpen } from "lucide-react";
 
 const Results = () => {
   const { user } = useContext(AuthContext);
@@ -18,11 +29,9 @@ const Results = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Student-specific state
   const [myResults, setMyResults] = useState([]);
   const [myCgpa, setMyCgpa] = useState(null);
 
-  // Faculty/Admin-specific state
   const [formData, setFormData] = useState({
     student: "",
     subject: "",
@@ -34,9 +43,6 @@ const Results = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Faculty/Admin has no default list to show on load — they only
-      // interact via the form below — so we skip fetching anything
-      // and just stop the loading state immediately for that role.
       if (isFacultyOrAdmin) {
         setLoading(false);
         return;
@@ -84,7 +90,7 @@ const Results = () => {
   if (loading) {
     return (
       <DashboardLayout>
-        <p className="font-body text-ink/50">Loading...</p>
+        <div className="bg-white rounded-lg border border-ink/10 p-6 h-48 animate-pulse"></div>
       </DashboardLayout>
     );
   }
@@ -101,12 +107,12 @@ const Results = () => {
         </div>
       )}
 
-      {/* ---------------- FACULTY / ADMIN VIEW ---------------- */}
       {isFacultyOrAdmin && (
         <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6">
-          <h2 className="font-display text-lg font-semibold text-ink mb-4">
-            Add Result
-          </h2>
+          <div className="flex items-center gap-2 mb-4">
+            <PlusCircle className="text-maroon" size={20} strokeWidth={1.75} />
+            <h2 className="font-display text-lg font-semibold text-ink">Add Result</h2>
+          </div>
           <form onSubmit={handleAddResult} className="flex flex-wrap gap-4 items-end">
             <div>
               <label className="block text-sm font-body text-ink/60 mb-1">Student ID</label>
@@ -115,7 +121,7 @@ const Results = () => {
                 value={formData.student}
                 onChange={(e) => setFormData({ ...formData, student: e.target.value })}
                 required
-                className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+                className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
               />
             </div>
             <div>
@@ -125,7 +131,7 @@ const Results = () => {
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                 required
-                className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+                className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
               />
             </div>
             <div>
@@ -137,7 +143,7 @@ const Results = () => {
                 value={formData.semester}
                 onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
                 required
-                className="border border-ink/15 rounded px-3 py-2 font-body text-sm w-20"
+                className="border border-ink/15 rounded px-3 py-2 font-body text-sm w-20 focus:outline-none focus:ring-2 focus:ring-maroon/40"
               />
             </div>
             <div>
@@ -148,7 +154,7 @@ const Results = () => {
                 value={formData.marksObtained}
                 onChange={(e) => setFormData({ ...formData, marksObtained: e.target.value })}
                 required
-                className="border border-ink/15 rounded px-3 py-2 font-body text-sm w-24"
+                className="border border-ink/15 rounded px-3 py-2 font-body text-sm w-24 focus:outline-none focus:ring-2 focus:ring-maroon/40"
               />
             </div>
             <div>
@@ -159,12 +165,12 @@ const Results = () => {
                 value={formData.maxMarks}
                 onChange={(e) => setFormData({ ...formData, maxMarks: e.target.value })}
                 required
-                className="border border-ink/15 rounded px-3 py-2 font-body text-sm w-24"
+                className="border border-ink/15 rounded px-3 py-2 font-body text-sm w-24 focus:outline-none focus:ring-2 focus:ring-maroon/40"
               />
             </div>
             <button
               type="submit"
-              className="bg-maroon text-white px-4 py-2 rounded font-body text-sm hover:bg-maroon-dark transition-colors"
+              className="bg-maroon text-white px-4 py-2 rounded font-body text-sm hover:bg-maroon-dark hover:scale-[1.02] transition-all"
             >
               Add
             </button>
@@ -175,22 +181,31 @@ const Results = () => {
         </div>
       )}
 
-      {/* ---------------- STUDENT VIEW ---------------- */}
       {!isFacultyOrAdmin && (
         <>
-          <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 mb-8">
-            <p className="font-body text-sm text-ink/50 mb-1">CGPA</p>
-            <p className="font-display text-4xl font-semibold text-role-student">
-              {myCgpa?.cgpa}
-            </p>
+          <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 mb-8 flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-role-student/10 flex items-center justify-center shrink-0">
+              <Award className="text-role-student" size={26} strokeWidth={1.75} />
+            </div>
+            <div>
+              <p className="font-body text-sm text-ink/50">CGPA</p>
+              <p className="font-display text-4xl font-semibold text-role-student">
+                {myCgpa?.cgpa}
+              </p>
+            </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6">
-            <h2 className="font-display text-lg font-semibold text-ink mb-4">
-              Subject-wise Marks
-            </h2>
+            <div className="flex items-center gap-2 mb-4">
+              <BookOpen className="text-role-student" size={20} strokeWidth={1.75} />
+              <h2 className="font-display text-lg font-semibold text-ink">
+                Subject-wise Marks
+              </h2>
+            </div>
             {myResults.length === 0 ? (
-              <p className="font-body text-sm text-ink/50">No results yet.</p>
+              <div className="text-center py-8">
+                <p className="font-body text-sm text-ink/40">No results yet.</p>
+              </div>
             ) : (
               <table className="w-full text-left font-body text-sm">
                 <thead>
