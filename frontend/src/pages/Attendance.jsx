@@ -10,6 +10,17 @@
 // two entirely separate page components for what's largely the
 // same layout.
 
+// ============================================================
+// ATTENDANCE PAGE
+// ============================================================
+// Shows different content depending on role:
+// - Faculty/Admin: a form to mark attendance + the defaulter list
+// - Student: their own attendance history + percentage, read-only
+//
+// VISUAL POLISH: icon-in-circle stat card for the student's overall
+// percentage, icons on section headers, skeleton loading, and a
+// friendlier empty state for the history table.
+
 import { useState, useEffect, useContext } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import { AuthContext } from "../context/AuthContext";
@@ -20,6 +31,7 @@ import {
   getAttendancePercentage,
   getDefaulterList,
 } from "../services/attendanceService";
+import { CalendarCheck, AlertTriangle, ClipboardList } from "lucide-react";
 
 const Attendance = () => {
   const { user } = useContext(AuthContext);
@@ -28,46 +40,41 @@ const Attendance = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Student-specific state
   const [myRecords, setMyRecords] = useState([]);
   const [myPercentage, setMyPercentage] = useState(null);
 
-  // Faculty/Admin-specific state
   const [defaulters, setDefaulters] = useState([]);
   const [formData, setFormData] = useState({ student: "", date: "", status: "present" });
   const [formMessage, setFormMessage] = useState("");
 
-  
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      if (isFacultyOrAdmin) {
-        const data = await getDefaulterList();
-        setDefaulters(data.defaulters);
-      } else {
-        const profile = await getMyProfile();
-        const studentId = profile.student._id;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (isFacultyOrAdmin) {
+          const data = await getDefaulterList();
+          setDefaulters(data.defaulters);
+        } else {
+          const profile = await getMyProfile();
+          const studentId = profile.student._id;
 
-        const [records, percentageData] = await Promise.all([
-          getStudentAttendance(studentId),
-          getAttendancePercentage(studentId),
-        ]);
+          const [records, percentageData] = await Promise.all([
+            getStudentAttendance(studentId),
+            getAttendancePercentage(studentId),
+          ]);
 
-        setMyRecords(records.attendance);
-        setMyPercentage(percentageData);
+          setMyRecords(records.attendance);
+          setMyPercentage(percentageData);
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to load attendance data");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to load attendance data");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchData();
-}, [isFacultyOrAdmin]);
-  // ------------------------------------------------------------
-  // handleMarkAttendance — Faculty/Admin only, submits the form
-  // ------------------------------------------------------------
+    fetchData();
+  }, [isFacultyOrAdmin]);
+
   const handleMarkAttendance = async (e) => {
     e.preventDefault();
     setFormMessage("");
@@ -83,7 +90,11 @@ useEffect(() => {
   if (loading) {
     return (
       <DashboardLayout>
-        <p className="font-body text-ink/50">Loading...</p>
+        <div className="bg-white rounded-lg border border-ink/10 p-6 h-32 animate-pulse mb-6">
+          <div className="h-4 bg-ink/10 rounded w-1/3 mb-4"></div>
+          <div className="h-3 bg-ink/10 rounded w-2/3"></div>
+        </div>
+        <div className="bg-white rounded-lg border border-ink/10 p-6 h-48 animate-pulse"></div>
       </DashboardLayout>
     );
   }
@@ -100,13 +111,15 @@ useEffect(() => {
         </div>
       )}
 
-      {/* ---------------- FACULTY / ADMIN VIEW ---------------- */}
       {isFacultyOrAdmin && (
         <>
           <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 mb-8">
-            <h2 className="font-display text-lg font-semibold text-ink mb-4">
-              Mark Attendance
-            </h2>
+            <div className="flex items-center gap-2 mb-4">
+              <CalendarCheck className="text-maroon" size={20} strokeWidth={1.75} />
+              <h2 className="font-display text-lg font-semibold text-ink">
+                Mark Attendance
+              </h2>
+            </div>
             <form onSubmit={handleMarkAttendance} className="flex flex-wrap gap-4 items-end">
               <div>
                 <label className="block text-sm font-body text-ink/60 mb-1">Student ID</label>
@@ -115,7 +128,7 @@ useEffect(() => {
                   value={formData.student}
                   onChange={(e) => setFormData({ ...formData, student: e.target.value })}
                   required
-                  className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+                  className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
                 />
               </div>
               <div>
@@ -125,7 +138,7 @@ useEffect(() => {
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                   required
-                  className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+                  className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
                 />
               </div>
               <div>
@@ -133,7 +146,7 @@ useEffect(() => {
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="border border-ink/15 rounded px-3 py-2 font-body text-sm"
+                  className="border border-ink/15 rounded px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-maroon/40"
                 >
                   <option value="present">Present</option>
                   <option value="absent">Absent</option>
@@ -141,7 +154,7 @@ useEffect(() => {
               </div>
               <button
                 type="submit"
-                className="bg-maroon text-white px-4 py-2 rounded font-body text-sm hover:bg-maroon-dark transition-colors"
+                className="bg-maroon text-white px-4 py-2 rounded font-body text-sm hover:bg-maroon-dark hover:scale-[1.02] transition-all"
               >
                 Mark
               </button>
@@ -152,11 +165,18 @@ useEffect(() => {
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6">
-            <h2 className="font-display text-lg font-semibold text-ink mb-4">
-              Defaulter List (below 75%)
-            </h2>
+            <div className="flex items-center gap-2 mb-4">
+              <AlertTriangle className="text-maroon" size={20} strokeWidth={1.75} />
+              <h2 className="font-display text-lg font-semibold text-ink">
+                Defaulter List (below 75%)
+              </h2>
+            </div>
             {defaulters.length === 0 ? (
-              <p className="font-body text-sm text-ink/50">No defaulters found.</p>
+              <div className="text-center py-8">
+                <p className="font-body text-sm text-ink/40">
+                  No defaulters — everyone's attendance is on track.
+                </p>
+              </div>
             ) : (
               <table className="w-full text-left font-body text-sm">
                 <thead>
@@ -179,22 +199,29 @@ useEffect(() => {
         </>
       )}
 
-      {/* ---------------- STUDENT VIEW ---------------- */}
       {!isFacultyOrAdmin && (
         <>
-          <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 mb-8">
-            <p className="font-body text-sm text-ink/50 mb-1">Overall Attendance</p>
-            <p className="font-display text-4xl font-semibold text-role-student">
-              {myPercentage?.percentage}%
-            </p>
+          <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 mb-8 flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-role-student/10 flex items-center justify-center shrink-0">
+              <CalendarCheck className="text-role-student" size={26} strokeWidth={1.75} />
+            </div>
+            <div>
+              <p className="font-body text-sm text-ink/50">Overall Attendance</p>
+              <p className="font-display text-4xl font-semibold text-role-student">
+                {myPercentage?.percentage}%
+              </p>
+            </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6">
-            <h2 className="font-display text-lg font-semibold text-ink mb-4">
-              History
-            </h2>
+            <div className="flex items-center gap-2 mb-4">
+              <ClipboardList className="text-role-student" size={20} strokeWidth={1.75} />
+              <h2 className="font-display text-lg font-semibold text-ink">History</h2>
+            </div>
             {myRecords.length === 0 ? (
-              <p className="font-body text-sm text-ink/50">No records yet.</p>
+              <div className="text-center py-8">
+                <p className="font-body text-sm text-ink/40">No records yet.</p>
+              </div>
             ) : (
               <table className="w-full text-left font-body text-sm">
                 <thead>
@@ -209,9 +236,11 @@ useEffect(() => {
                       <td className="py-2 text-ink">
                         {new Date(r.date).toLocaleDateString()}
                       </td>
-                      <td className={`py-2 font-medium capitalize ${
-                        r.status === "present" ? "text-role-faculty" : "text-maroon"
-                      }`}>
+                      <td
+                        className={`py-2 font-medium capitalize ${
+                          r.status === "present" ? "text-role-faculty" : "text-maroon"
+                        }`}
+                      >
                         {r.status}
                       </td>
                     </tr>
