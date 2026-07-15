@@ -5,36 +5,47 @@
 // Shows different links depending on the logged-in user's role —
 // reads role from AuthContext, same pattern as ProtectedRoute.
 
+// ============================================================
+// SIDEBAR
+// ============================================================
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import {
+  LayoutDashboard,
+  Users,
+  Building2,
+  ClipboardCheck,
+  GraduationCap,
+  Bell,
+} from "lucide-react";
 
 const Sidebar = () => {
   const { user } = useContext(AuthContext);
 
-  // Define nav links per role. Each role sees a different set of
-  // pages, matching what their backend RBAC actually permits them
-  // to do — no point showing a "Manage Students" link to a student.
+  // Each link now carries an icon component alongside its label —
+  // icons make the sidebar scannable at a glance instead of relying
+  // purely on reading text, which is how most polished dashboards feel.
   const navLinksByRole = {
     admin: [
-      { label: "Dashboard", path: "/admin/dashboard" },
-      { label: "Students", path: "/students" },
-      { label: "Departments", path: "/departments" },
-      { label: "Attendance", path: "/attendance" },
-      { label: "Results", path: "/results" },
-      { label: "Notices", path: "/notices" },
+      { label: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+      { label: "Students", path: "/students", icon: Users },
+      { label: "Departments", path: "/departments", icon: Building2 },
+      { label: "Attendance", path: "/attendance", icon: ClipboardCheck },
+      { label: "Results", path: "/results", icon: GraduationCap },
+      { label: "Notices", path: "/notices", icon: Bell },
     ],
     faculty: [
-      { label: "Dashboard", path: "/faculty/dashboard" },
-      { label: "Attendance", path: "/attendance" },
-      { label: "Results", path: "/results" },
-      { label: "Notices", path: "/notices" },
+      { label: "Dashboard", path: "/faculty/dashboard", icon: LayoutDashboard },
+      { label: "Attendance", path: "/attendance", icon: ClipboardCheck },
+      { label: "Results", path: "/results", icon: GraduationCap },
+      { label: "Notices", path: "/notices", icon: Bell },
     ],
     student: [
-      { label: "Dashboard", path: "/student/dashboard" },
-      { label: "My Attendance", path: "/attendance" },
-      { label: "My Results", path: "/results" },
-      { label: "Notices", path: "/notices" },
+      { label: "Dashboard", path: "/student/dashboard", icon: LayoutDashboard },
+      { label: "My Attendance", path: "/attendance", icon: ClipboardCheck },
+      { label: "My Results", path: "/results", icon: GraduationCap },
+      { label: "Notices", path: "/notices", icon: Bell },
     ],
   };
 
@@ -49,21 +60,25 @@ const Sidebar = () => {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {links.map((link) => (
-          <NavLink
-            key={link.path}
-            to={link.path}
-            className={({ isActive }) =>
-              `block px-3 py-2 rounded font-body text-sm transition-colors ${
-                isActive
-                  ? "bg-maroon text-white"
-                  : "text-paper/70 hover:bg-ink-light hover:text-paper"
-              }`
-            }
-          >
-            {link.label}
-          </NavLink>
-        ))}
+        {links.map((link) => {
+          const Icon = link.icon;
+          return (
+            <NavLink
+              key={link.path}
+              to={link.path}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg font-body text-sm transition-all ${
+                  isActive
+                    ? "bg-maroon text-white shadow-sm"
+                    : "text-paper/70 hover:bg-ink-light hover:text-paper hover:translate-x-0.5"
+                }`
+              }
+            >
+              <Icon size={18} strokeWidth={1.75} />
+              {link.label}
+            </NavLink>
+          );
+        })}
       </nav>
     </aside>
   );
