@@ -83,6 +83,7 @@ const getAllStudents = async (req, res) => {
  * @route   GET /api/students/:id
  * @access  Private
  */
+
 const getStudentById = async (req, res) => {
   try {
     const student = await Student.findById(req.params.id)
@@ -184,10 +185,48 @@ const deleteStudent = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Get the logged-in user's own Student profile
+ * @route   GET /api/students/me
+ * @access  Student (their own profile only)
+ */
+const getMyStudentProfile = async (req, res) => {
+  try {
+    // req.user.id comes from the JWT payload (set by the protect
+    // middleware) — this is the logged-in User's own ID, not a
+    // Student ID. We look up the Student document that references
+    // this exact User, rather than trusting any ID from the URL —
+    // this is what makes it an "ownership" lookup instead of a
+    // role-only check: a student can ONLY ever get their own profile
+    // this way, never anyone else's.
+    const student = await Student.findOne({ user: req.user.id })
+      .populate("user", "name email role")
+      .populate("department", "name code");
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student profile not found for this user",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      student,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   createStudent,
   getAllStudents,
   getStudentById,
   updateStudent,
   deleteStudent,
+  getMyStudentProfile,
 };

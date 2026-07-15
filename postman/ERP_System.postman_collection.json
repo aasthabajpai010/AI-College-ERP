@@ -202,6 +202,15 @@
       "name": "3. Students",
       "item": [
         {
+          "name": "Get My Student Profile (Student - ownership check)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{studentToken}}" }],
+            "url": { "raw": "{{baseUrl}}/students/me", "host": ["{{baseUrl}}"], "path": ["students", "me"] }
+          },
+          "description": "Looks up the Student profile linked to the logged-in user's own JWT (req.user.id) — not by any ID in the URL. This is an ownership check, not just a role check: a student can only ever get their own profile this way. Must be defined before GET /:id in the routes file, or Express would treat 'me' as an :id value."
+        },
+        {
           "name": "Create Student (Admin)",
           "event": [
             {

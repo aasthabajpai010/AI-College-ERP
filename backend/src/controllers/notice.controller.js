@@ -39,7 +39,8 @@ const createNotice = async (req, res) => {
       postedBy: req.user.id,
       department: department || null,
     });
-
+// Populate before emitting, so real-time clients get full postedBy info
+await notice.populate("postedBy", "name role");
     // ------------------------------------------------------------
     // STEP 2: Emit a real-time Socket.IO event immediately.
     // We do this BEFORE waiting for the AI summary, so students get

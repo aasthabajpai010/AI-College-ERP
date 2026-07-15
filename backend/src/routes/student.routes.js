@@ -74,6 +74,7 @@ const {
   getStudentById,
   updateStudent,
   deleteStudent,
+  getMyStudentProfile,
 } = require("../controllers/student.controller");
 
 const { protect, authorizeRoles } = require("../middlewares/auth.middleware");
@@ -81,6 +82,28 @@ const { protect, authorizeRoles } = require("../middlewares/auth.middleware");
 // router is a mini-app that handles only student-related URLs.
 // We export it and mount it in server.js: app.use("/api/students", studentRoutes)
 const router = express.Router();
+
+
+// ============================================================
+// GET /me  — Get the LOGGED-IN user's own Student profile
+// Full URL when mounted: GET /api/students/me
+// ============================================================
+//
+// ROLE: student only
+// WHY does this route exist separately from GET /:id?
+// - GET /:id lets admin/faculty/student fetch a profile BY A GIVEN ID,
+//   but doesn't check that a student is only fetching their OWN profile.
+// - This route ignores any ID in the URL entirely and instead looks up
+//   the Student document using req.user.id (from the verified JWT) —
+//   this is an OWNERSHIP check, not just a role check. A student calling
+//   this route can only ever get their own data, by construction.
+//
+// CRITICAL: this route MUST be defined BEFORE the "/:id" route below.
+// Express matches routes top-down — if "/:id" came first, a request to
+// "/me" would incorrectly be treated as if "me" were an :id value.
+//
+// Middleware order: protect → authorizeRoles("student") → getMyStudentProfile
+router.get("/me", protect, authorizeRoles("student"), getMyStudentProfile);
 
 // ============================================================
 // POST /  — Create a new student profile
