@@ -21,6 +21,14 @@
 // percentage, icons on section headers, skeleton loading, and a
 // friendlier empty state for the history table.
 
+// ============================================================
+// ATTENDANCE PAGE
+// ============================================================
+// Shows different content depending on role:
+// - Faculty/Admin: a form to mark attendance + the defaulter list
+// - Student: their own attendance history + percentage, read-only,
+//   with a donut chart visualizing Present vs Absent split.
+
 import { useState, useEffect, useContext } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import { AuthContext } from "../context/AuthContext";
@@ -32,6 +40,7 @@ import {
   getDefaulterList,
 } from "../services/attendanceService";
 import { CalendarCheck, AlertTriangle, ClipboardList } from "lucide-react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 const Attendance = () => {
   const { user } = useContext(AuthContext);
@@ -98,6 +107,16 @@ const Attendance = () => {
       </DashboardLayout>
     );
   }
+
+  // Build chart data from the raw percentage numbers — derive present
+  // and absent COUNTS (not just the percentage) since a donut chart
+  // needs two comparable slice values, not a single percentage figure.
+  const chartData = myPercentage
+    ? [
+        { name: "Present", value: myPercentage.present },
+        { name: "Absent", value: myPercentage.totalClasses - myPercentage.present },
+      ]
+    : [];
 
   return (
     <DashboardLayout>
@@ -201,15 +220,43 @@ const Attendance = () => {
 
       {!isFacultyOrAdmin && (
         <>
-          <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 mb-8 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-role-student/10 flex items-center justify-center shrink-0">
-              <CalendarCheck className="text-role-student" size={26} strokeWidth={1.75} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Stat card */}
+            <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 flex items-center gap-4">
+              <div className="w-14 h-14 rounded-full bg-role-student/10 flex items-center justify-center shrink-0">
+                <CalendarCheck className="text-role-student" size={26} strokeWidth={1.75} />
+              </div>
+              <div>
+                <p className="font-body text-sm text-ink/50">Overall Attendance</p>
+                <p className="font-display text-4xl font-semibold text-role-student">
+                  {myPercentage?.percentage}%
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-body text-sm text-ink/50">Overall Attendance</p>
-              <p className="font-display text-4xl font-semibold text-role-student">
-                {myPercentage?.percentage}%
-              </p>
+
+            {/* Donut chart: Present vs Absent, giving a visual sense of
+                the split rather than a single number alone */}
+            <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6">
+              <p className="font-body text-sm text-ink/50 mb-2">Present vs Absent</p>
+              <ResponsiveContainer width="100%" height={160}>
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={40}
+                    outerRadius={65}
+                    paddingAngle={2}
+                  >
+                    <Cell fill="#3D6B5C" />
+                    <Cell fill="#8C2F39" />
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ fontFamily: "Inter", fontSize: 13, borderRadius: 8, border: "1px solid #1B233320" }}
+                  />
+                  <Legend wrapperStyle={{ fontFamily: "Inter", fontSize: 12 }} />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
 

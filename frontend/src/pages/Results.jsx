@@ -15,12 +15,29 @@
 // VISUAL POLISH: icon-in-circle CGPA card, icons on section headers,
 // skeleton loading, and friendlier empty states.
 
+// ============================================================
+// RESULTS PAGE
+// ============================================================
+// Same role-branching pattern as Attendance.jsx:
+// - Faculty/Admin: a form to add marks for a subject
+// - Student: their own results list + CGPA, read-only, with a bar
+//   chart visualizing marks per subject.
+
 import { useState, useEffect, useContext } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import { AuthContext } from "../context/AuthContext";
 import { getMyProfile } from "../services/studentService";
 import { addResult, getStudentResults, getCGPA } from "../services/resultService";
 import { Award, PlusCircle, BookOpen } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const Results = () => {
   const { user } = useContext(AuthContext);
@@ -94,6 +111,14 @@ const Results = () => {
       </DashboardLayout>
     );
   }
+
+  // Build chart-friendly data: each subject's percentage score,
+  // since raw marks alone (e.g. 85/100 vs 40/50) aren't directly
+  // comparable across subjects with different max marks.
+  const chartData = myResults.map((r) => ({
+    subject: r.subject,
+    percentage: Math.round((r.marksObtained / r.maxMarks) * 100),
+  }));
 
   return (
     <DashboardLayout>
@@ -183,15 +208,34 @@ const Results = () => {
 
       {!isFacultyOrAdmin && (
         <>
-          <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 mb-8 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-role-student/10 flex items-center justify-center shrink-0">
-              <Award className="text-role-student" size={26} strokeWidth={1.75} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6 flex items-center gap-4">
+              <div className="w-14 h-14 rounded-full bg-role-student/10 flex items-center justify-center shrink-0">
+                <Award className="text-role-student" size={26} strokeWidth={1.75} />
+              </div>
+              <div>
+                <p className="font-body text-sm text-ink/50">CGPA</p>
+                <p className="font-display text-4xl font-semibold text-role-student">
+                  {myCgpa?.cgpa}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="font-body text-sm text-ink/50">CGPA</p>
-              <p className="font-display text-4xl font-semibold text-role-student">
-                {myCgpa?.cgpa}
-              </p>
+
+            {/* Bar chart: percentage score per subject */}
+            <div className="bg-white rounded-lg shadow-sm border border-ink/10 p-6">
+              <p className="font-body text-sm text-ink/50 mb-2">Score by Subject</p>
+              <ResponsiveContainer width="100%" height={160}>
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1B233310" />
+                  <XAxis dataKey="subject" tick={{ fontSize: 11, fontFamily: "Inter" }} stroke="#1B233340" />
+                  <YAxis tick={{ fontSize: 11, fontFamily: "Inter" }} stroke="#1B233340" />
+                  <Tooltip
+                    contentStyle={{ fontFamily: "Inter", fontSize: 13, borderRadius: 8, border: "1px solid #1B233320" }}
+                    formatter={(value) => [`${value}%`, "Score"]}
+                  />
+                  <Bar dataKey="percentage" fill="#2C5C8C" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
