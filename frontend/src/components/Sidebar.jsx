@@ -52,7 +52,7 @@ const Sidebar = () => {
   const links = navLinksByRole[user?.role] || [];
 
   return (
-    <aside className="w-64 bg-ink text-paper min-h-screen flex flex-col">
+    <aside className="w-64 bg-ink dark:bg-ink-dark-surface text-paper min-h-screen flex flex-col transition-colors">
       <div className="px-6 py-6 border-b border-white/10">
         <h1 className="font-display text-xl font-semibold tracking-tight">
           College ERP

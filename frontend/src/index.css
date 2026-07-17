@@ -14,6 +14,13 @@
   --font-display: "Fraunces", serif;
   --font-body: "Inter", sans-serif;
 }
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-ink-dark-bg: #14181F;
+  --color-ink-dark-surface: #1B2130;
+  --color-paper-dark: #E8E6E0;
+}
 @keyframes fadeInUp {
   from {
     opacity: 0;

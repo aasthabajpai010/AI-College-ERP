@@ -21,7 +21,8 @@ const DashboardLayout = ({ children }) => {
     // flex row: Sidebar takes its own fixed width (defined inside
     // Sidebar.jsx itself, w-64), and the rest of the row is the
     // main content area.
-    <div className="flex min-h-screen bg-paper">
+        <div className="flex min-h-screen bg-paper dark:bg-ink-dark-bg transition-colors">
+
       <Sidebar />
 
       {/* flex-1 makes this div stretch to fill all remaining
