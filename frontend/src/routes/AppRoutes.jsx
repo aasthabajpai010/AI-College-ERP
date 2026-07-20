@@ -18,6 +18,7 @@ import Students from "../pages/Students";
 import Notices from "../pages/Notices"; 
 import Register from "../pages/Register"; 
 import Departments from "../pages/Departments"; 
+import NotFound from "../pages/NotFound";
 
 const AppRoutes = () => {
   return (
@@ -96,6 +97,12 @@ const AppRoutes = () => {
     </ProtectedRoute>
   }
 />
+{/* Catch-all — must be the LAST route. path="*" matches any URL
+    that didn't match one of the routes defined above it. */}
+<Route path="*" element={<NotFound />} />
+ 
+ 
+ 
   </Routes>
   );
 };
