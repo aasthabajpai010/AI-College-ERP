@@ -70,7 +70,25 @@ const studentSchema = new mongoose.Schema(
     timestamps: true, // Automatically adds createdAt and updatedAt fields
   }
 );
+// ============================================================
+// EXPLICIT INDEXES FOR QUERY PERFORMANCE
+// ============================================================
+// rollNumber and user already get an index automatically from
+// `unique: true` in the schema above — Mongoose creates an index
+// behind the scenes whenever unique is set. The indexes below are
+// ADDITIONAL ones for fields that are frequently queried but were
+// not already unique/indexed.
 
+// Single-field index on department — speeds up queries like
+// "find all students in department X" (e.g. Admin filtering the
+// Students page, or generating department-wise reports).
+studentSchema.index({ department: 1 });
+
+// Compound index on (department, semester) — speeds up queries that
+// filter by BOTH fields together, e.g. "all CSE students in semester 3".
+// A compound index is more effective here than two separate single-field
+// indexes when queries commonly filter on both fields at once.
+studentSchema.index({ department: 1, semester: 1 });
 const Student = mongoose.model("Student", studentSchema);
 
 module.exports = Student;

@@ -62,10 +62,14 @@ const Navbar = () => {
         {/* Bell icon with unread badge */}
         <div className="relative">
           <button
-            onClick={handleBellClick}
-            className="relative text-ink/60 dark:text-paper-dark/60 hover:text-maroon transition-colors p-1"
-          >
-            <Bell size={18} strokeWidth={1.75} />
+  onClick={handleBellClick}
+  className={`relative transition-colors p-1 ${
+    unreadCount > 0
+      ? "text-amber-500 hover:text-amber-600"
+      : "text-ink/60 dark:text-paper-dark/60 hover:text-maroon"
+  }`}
+>
+  <Bell size={18} strokeWidth={1.75} fill={unreadCount > 0 ? "currentColor" : "none"} />
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-maroon text-white text-[10px] font-body rounded-full w-4 h-4 flex items-center justify-center">
                 {unreadCount}
