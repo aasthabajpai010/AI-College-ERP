@@ -17,6 +17,7 @@ import Results from "../pages/Results";
 import Students from "../pages/Students";
 import Notices from "../pages/Notices"; 
 import Register from "../pages/Register"; 
+import Departments from "../pages/Departments"; 
 
 const AppRoutes = () => {
   return (
@@ -87,7 +88,14 @@ const AppRoutes = () => {
     </ProtectedRoute>
   }
 />
-
+<Route
+  path="/departments"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <Departments />
+    </ProtectedRoute>
+  }
+/>
   </Routes>
   );
 };
