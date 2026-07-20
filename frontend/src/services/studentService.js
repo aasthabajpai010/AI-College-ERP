@@ -25,3 +25,17 @@ export const createStudent = async (studentData) => {
   const response = await api.post("/students", studentData);
   return response.data;
 };
+
+// Add these two to src/services/studentService.js:
+
+// Calls PUT /api/students/:id — update a student profile, Admin only
+export const updateStudent = async (id, data) => {
+  const response = await api.put(`/students/${id}`, data);
+  return response.data;
+};
+
+// Calls DELETE /api/students/:id — delete a student profile, Admin only
+export const deleteStudent = async (id) => {
+  const response = await api.delete(`/students/${id}`);
+  return response.data;
+};
