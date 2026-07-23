@@ -93,15 +93,11 @@ Three roles share one platform, each with a distinct, permission-scoped experien
 
 ## Screenshots
 
-> Add screenshots here before publishing — a login page, one dashboard per role, and the notices page with the AI summary visible all make strong first impressions on a repo's README.
-
-```
-/screenshots
-  ├── login.png
-  ├── admin-dashboard.png
-  ├── student-dashboard.png
-  └── notices.png
-```
+| | |
+|---|---|
+| **Login** ![Login](./docs/screenshots/login.png) | **Register** ![Register](./docs/screenshots/register.png) |
+| **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Faculty Dashboard** ![Faculty Dashboard](./docs/screenshots/faculty-dashboard.png) |
+| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Notices](./docs/screenshots/notices.png) |
 
 ---
 
