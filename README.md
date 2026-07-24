@@ -21,6 +21,7 @@ A full-stack, role-based ERP platform for colleges — built with the MERN stack
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [API Overview](#api-overview)
+- [API Documentation](./API_DOCUMENTATION.md)
 - [Project Structure](#project-structure)
 - [Key Design Decisions](#key-design-decisions)
 - [Known Limitations](#known-limitations)
