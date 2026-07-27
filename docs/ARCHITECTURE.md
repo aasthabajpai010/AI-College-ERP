@@ -154,7 +154,7 @@ AI-College-ERP/
 
 ## 4. Backend Request Flow
 
-![Backend request flow](./docs/images/backend_flow.png)
+![Backend request flow](./images/backend_flow.png)
 
 Socket.IO runs in parallel as a persistent connection: when `notice.controller.js` successfully creates a notice, it emits a `newNotice` event to all connected clients — received globally via `NotificationContext`, which powers both the Notices page and the Navbar's bell icon simultaneously.
 
@@ -162,7 +162,7 @@ Socket.IO runs in parallel as a persistent connection: when `notice.controller.j
 
 ## 5. Frontend Architecture
 
-![Provider hierarchy and routing flow](./docs/images/frontend_flow.png)
+![Provider hierarchy and routing flow](./images/frontend_flow.png)
 
 Every dashboard and feature route is wrapped in `ProtectedRoute`, which checks role client-side for UX purposes. The actual security boundary is always the backend's `protect` + `authorizeRoles` middleware.
 
@@ -189,7 +189,7 @@ JSON response flows back → setState() updates the page
 
 ## 6. Role-Based Access Control (RBAC) Summary
 
-![RBAC access matrix](./docs/images/rbac_matrix.png)
+![RBAC access matrix](./images/rbac_matrix.png)
 
 **Known limitation:** Some routes (e.g. `GET /students/:id`, `GET /results/:studentId`) check role but not ownership — a student with a valid token could technically query another student's ID if they had it. `/students/me` was built specifically to close this gap for the most sensitive case (a student's own profile lookup); extending ownership checks to every student-facing route is a noted future improvement.
 
@@ -197,7 +197,7 @@ JSON response flows back → setState() updates the page
 
 ## 7. Database Schema Relationships
 
-![Database schema relationships](./docs/images/schema_relationships.png)
+![Database schema relationships](./images/schema_relationships.png)
 
 ---
 

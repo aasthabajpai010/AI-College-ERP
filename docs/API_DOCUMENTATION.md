@@ -848,6 +848,6 @@ socket.on("newNotice", (notice) => {
 
 ## Postman Collection
 
-A complete, ready-to-import Postman collection covering every endpoint above — including RBAC checks (expected 403s) and duplicate-entry checks (expected 400s) — is available at [`/postman/ERP_System.postman_collection.json`](./postman/ERP_System.postman_collection.json).
+A complete, ready-to-import Postman collection covering every endpoint above — including RBAC checks (expected 403s) and duplicate-entry checks (expected 400s) — is available at [`/postman/ERP_System.postman_collection.json`](../postman/ERP_System.postman_collection.json).
 
 The collection uses collection variables (`baseUrl`, `adminToken`, `studentToken`, `departmentId`, `studentId`) with auto-save scripts on Login/Create requests, so tokens and IDs populate automatically as you work through the requests in order — no manual copy-pasting required.

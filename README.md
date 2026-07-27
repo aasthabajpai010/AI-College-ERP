@@ -21,7 +21,7 @@ A full-stack, role-based ERP platform for colleges — built with the MERN stack
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [API Overview](#api-overview)
-- [API Documentation](./API_DOCUMENTATION.md)
+- [API Documentation](./docs/API_DOCUMENTATION.md)
 - [Project Structure](#project-structure)
 - [Key Design Decisions](#key-design-decisions)
 - [Known Limitations](#known-limitations)
@@ -98,7 +98,7 @@ Three roles share one platform, each with a distinct, permission-scoped experien
 |---|---|
 | **Login** ![Login](./docs/screenshots/login.png) | **Register** ![Register](./docs/screenshots/register.png) |
 | **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Student Dashboard** ![Student Dashboard](./docs/screenshots/student-dashboard.png) |
-| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Notices](./docs/screenshots/notices.png) |
+| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Student-Notices](./docs/screenshots/student-notices.png) |
 
 ---
 
@@ -123,7 +123,7 @@ Socket.IO (real-time layer, JWT-authenticated)              Mongoose Models
 
 Socket.IO runs on the same HTTP server as the REST API (`http.createServer(app)`), sharing one port. When a notice is created, it's saved through the normal REST flow **and** broadcast via `io.emit()` — connected clients receive it instantly without polling.
 
-For a fully diagrammed breakdown of both backend and frontend architecture, see [`ARCHITECTURE.md`](./ARCHITECTURE.md).
+For a fully diagrammed breakdown of both backend and frontend architecture, see [`ARCHITECTURE.md`](./docs/ARCHITECTURE.md).
 
 ---
 
@@ -219,7 +219,7 @@ VITE_SOCKET_URL=http://localhost:5000
 | GET | `/api/dashboard/student/:studentId` | All | Student's own summary |
 | POST / GET | `/api/notices` | Admin+Faculty (post), All (view) | Notices, with AI summary + Socket.IO broadcast |
 
-A full Postman collection covering all endpoints, including RBAC and validation edge cases, is available in [`/postman`](./postman).
+A full Postman collection covering all endpoints, including RBAC and validation edge cases, is available in [`/postman`](./postman/ERP_System.postman_collection.json).
 
 ---
 
