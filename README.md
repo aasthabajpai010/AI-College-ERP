@@ -21,7 +21,7 @@ A full-stack, role-based ERP platform for colleges — built with the MERN stack
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [API Overview](#api-overview)
-- [API Documentation](./docs/API_DOCUMENTATION.md)
+- [Documentation](#documentation)
 - [Project Structure](#project-structure)
 - [Key Design Decisions](#key-design-decisions)
 - [Known Limitations](#known-limitations)
@@ -97,8 +97,8 @@ Three roles share one platform, each with a distinct, permission-scoped experien
 | | |
 |---|---|
 | **Login** ![Login](./docs/screenshots/login.png) | **Register** ![Register](./docs/screenshots/register.png) |
-| **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Student Dashboard** ![Student Dashboard](./docs/screenshots/student-dashboard.png) |
-| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Student-Notices](./docs/screenshots/student-notices.png) |
+| **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Faculty Dashboard** ![Faculty Dashboard](./docs/screenshots/faculty-dashboard.png) |
+| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Notices](./docs/screenshots/notices.png) |
 
 ---
 
@@ -123,7 +123,7 @@ Socket.IO (real-time layer, JWT-authenticated)              Mongoose Models
 
 Socket.IO runs on the same HTTP server as the REST API (`http.createServer(app)`), sharing one port. When a notice is created, it's saved through the normal REST flow **and** broadcast via `io.emit()` — connected clients receive it instantly without polling.
 
-For a fully diagrammed breakdown of both backend and frontend architecture, see [`ARCHITECTURE.md`](./docs/ARCHITECTURE.md).
+For a fully diagrammed breakdown of both backend and frontend architecture, see [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md).
 
 ---
 
@@ -148,6 +148,18 @@ npm install
 # Install frontend dependencies
 cd ../frontend
 npm install
+```
+
+### Environment Setup
+
+Copy the example env files and fill in real values (see [Environment Variables](#environment-variables) below):
+
+```bash
+cd backend
+cp .env.example .env
+
+cd ../frontend
+cp .env.example .env
 ```
 
 ### Running Locally
@@ -199,6 +211,8 @@ VITE_API_URL=http://localhost:5000/api
 VITE_SOCKET_URL=http://localhost:5000
 ```
 
+Example files (`.env.example`) with the same structure but no real values are provided in both `backend/` and `frontend/` — copy and fill them in rather than creating `.env` from scratch.
+
 ---
 
 ## API Overview
@@ -219,7 +233,28 @@ VITE_SOCKET_URL=http://localhost:5000
 | GET | `/api/dashboard/student/:studentId` | All | Student's own summary |
 | POST / GET | `/api/notices` | Admin+Faculty (post), All (view) | Notices, with AI summary + Socket.IO broadcast |
 
-A full Postman collection covering all endpoints, including RBAC and validation edge cases, is available in [`/postman`](./postman/ERP_System.postman_collection.json).
+Full endpoint-by-endpoint documentation — including request/response examples and error cases — is in [`docs/API_DOCUMENTATION.md`](./docs/API_DOCUMENTATION.md).
+
+A ready-to-import Postman collection covering every endpoint, including RBAC and validation edge cases, is at [`docs/ERP_System.postman_collection`](./docs/ERP_System.postman_collection).
+
+---
+
+## Documentation
+
+Everything beyond this README lives in [`/docs`](./docs):
+
+| File | Contents |
+|---|---|
+| [`ARCHITECTURE.md`](./docs/ARCHITECTURE.md) | Full system architecture, backend/frontend flow diagrams, RBAC matrix, schema relationships |
+| [`API_DOCUMENTATION.md`](./docs/API_DOCUMENTATION.md) | Every endpoint — request/response examples, auth requirements, error codes |
+| [`Database-Documentation.md`](./docs/Database-Documentation.md) | Collections, fields, keys, relationships, ER diagram |
+| [`Deployment-Guide.md`](./docs/Deployment-Guide.md) | Local setup, environment variables, deploying backend + frontend, troubleshooting |
+| [`Folder-Structure.md`](./docs/Folder-Structure.md) | Every folder and file explained, naming conventions |
+| [`PRD.md`](./docs/PRD.md) | Project requirements — what's being built, for whom, and why |
+| [`RULES.md`](./docs/RULES.md) | Tech stack boundaries and architectural rules followed during development |
+| [`DESIGN.md`](./docs/DESIGN.md) | Visual design system — colors, typography, component patterns |
+| [`MEMORY.md`](./docs/MEMORY.md) | Current project status, known gaps, key decisions log |
+| [`ERP_System.postman_collection`](./docs/ERP_System.postman_collection) | Importable Postman collection for all endpoints |
 
 ---
 
@@ -236,19 +271,32 @@ AI-College-ERP/
 │   │   ├── middlewares/     # Auth (JWT/RBAC), error handling
 │   │   ├── socket/          # Socket.IO setup
 │   │   └── utils/           # JWT generation, AI summarization
+│   ├── .env.example
 │   └── server.js
 │
 ├── frontend/
-│   └── src/
-│       ├── pages/           # Route-level page components
-│       ├── components/      # Reusable UI (Navbar, Sidebar, etc.)
-│       ├── context/         # Auth, Notification, Theme state
-│       ├── services/        # API call functions per resource
-│       ├── hooks/           # useSocket, etc.
-│       └── routes/          # Route definitions
+│   ├── src/
+│   │   ├── pages/           # Route-level page components
+│   │   ├── components/      # Reusable UI (Navbar, Sidebar, etc.)
+│   │   ├── context/         # Auth, Notification, Theme state
+│   │   ├── services/        # API call functions per resource
+│   │   ├── hooks/           # useSocket, etc.
+│   │   └── routes/          # Route definitions
+│   └── .env.example
 │
-└── postman/
-    └── ERP_System.postman_collection.json
+└── docs/
+    ├── ARCHITECTURE.md
+    ├── API_DOCUMENTATION.md
+    ├── Database-Documentation.md
+    ├── Deployment-Guide.md
+    ├── Folder-Structure.md
+    ├── PRD.md
+    ├── RULES.md
+    ├── DESIGN.md
+    ├── MEMORY.md
+    ├── ERP_System.postman_collection
+    ├── images/               # Architecture diagrams
+    └── screenshots/          # App screenshots
 ```
 
 ---
