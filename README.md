@@ -18,6 +18,7 @@ A full-stack, role-based ERP platform for colleges — built with the MERN stack
 - [Tech Stack](#tech-stack)
 - [Screenshots](#screenshots)
 - [Architecture](#architecture)
+- [Diagrams](#diagrams)
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [API Overview](#api-overview)
@@ -97,8 +98,8 @@ Three roles share one platform, each with a distinct, permission-scoped experien
 | | |
 |---|---|
 | **Login** ![Login](./docs/screenshots/login.png) | **Register** ![Register](./docs/screenshots/register.png) |
-| **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Faculty Dashboard** ![Faculty Dashboard](./docs/screenshots/Faculty-dashboard.png) |
-| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Notices](./docs/screenshots/student-notices.png) |
+| **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Faculty Dashboard** ![Faculty Dashboard](./docs/screenshots/faculty-dashboard.png) |
+| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Notices](./docs/screenshots/notices.png) |
 
 ---
 
@@ -236,6 +237,21 @@ Example files (`.env.example`) with the same structure but no real values are pr
 Full endpoint-by-endpoint documentation — including request/response examples and error cases — is in [`docs/API_DOCUMENTATION.md`](./docs/API_DOCUMENTATION.md).
 
 A ready-to-import Postman collection covering every endpoint, including RBAC and validation edge cases, is at [`docs/ERP_System.postman_collection`](./docs/ERP_System.postman_collection).
+
+---
+
+## Diagrams
+
+Direct links to every visual asset in the project — click to open:
+
+| Diagram | Link |
+|---|---|
+| ER Diagram (database schema) | [`docs/er-diagram.png`](./docs/er-diagram.png) |
+| Sequence Diagram (login flow) | [`docs/sequence-diagram.png`](./docs/sequence-diagram.png) |
+| Backend Request Flow | [`docs/images/backend_flow.png`](./docs/images/backend_flow.png) |
+| Frontend Provider Hierarchy & Routing | [`docs/images/frontend_flow.png`](./docs/images/frontend_flow.png) |
+| Database Schema Relationships | [`docs/images/schema_relationships.png`](./docs/images/schema_relationships.png) |
+| RBAC Access Matrix | [`docs/images/rbac_matrix.png`](./docs/images/rbac_matrix.png) |
 
 ---
 
