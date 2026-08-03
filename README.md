@@ -112,8 +112,8 @@ Three roles share one platform, each with a distinct, permission-scoped experien
 | | |
 |---|---|
 | **Login** ![Login](./docs/screenshots/login.png) | **Register** ![Register](./docs/screenshots/register.png) |
-| **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Faculty Dashboard** ![Faculty Dashboard](./docs/screenshots/faculty-dashboard.png) |
-| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Notices](./docs/screenshots/notices.png) |
+| **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Faculty Dashboard** ![Faculty Dashboard](./docs/screenshots/Faculty-dashboard.png) |
+| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Notices](./docs/screenshots/student-notices.png) |
 
 ---
 
