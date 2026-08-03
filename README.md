@@ -9,6 +9,20 @@ A full-stack, role-based ERP platform for colleges — built with the MERN stack
 ![Tech Stack](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
 ![Tech Stack](https://img.shields.io/badge/Socket.IO-010101?style=flat&logo=socket.io&logoColor=white)
 
+<p align="center">
+  <a href="https://erp-frontend-sepia-omega.vercel.app/"><img src="https://img.shields.io/badge/Live%20Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo"></a>
+  <a href="https://erp-backend-43g3.onrender.com/"><img src="https://img.shields.io/badge/API-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Backend API"></a>
+  <a href="https://github.com/aasthabajpai010/AI-College-ERP"><img src="https://img.shields.io/badge/Source-GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo"></a>
+</p>
+
+<p align="center">
+  🔗 <a href="https://erp-frontend-sepia-omega.vercel.app/"><b>Live App</b></a> &nbsp;|&nbsp;
+  ⚙️ <a href="https://erp-backend-43g3.onrender.com/"><b>Backend API</b></a> &nbsp;|&nbsp;
+  📦 <a href="https://github.com/aasthabajpai010/AI-College-ERP"><b>Repository</b></a>
+</p>
+
+> **Note:** The backend is hosted on Render's free tier, which sleeps after 15 minutes of inactivity. The first request after idle may take 30–60 seconds to wake up — please be patient on first load.
+
 ---
 
 ## Table of Contents
@@ -98,8 +112,8 @@ Three roles share one platform, each with a distinct, permission-scoped experien
 | | |
 |---|---|
 | **Login** ![Login](./docs/screenshots/login.png) | **Register** ![Register](./docs/screenshots/register.png) |
-| **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Faculty Dashboard** ![Faculty Dashboard](./docs/screenshots/Faculty-dashboard.png) |
-| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Notices](./docs/screenshots/student-notices.png) |
+| **Admin Dashboard** ![Admin Dashboard](./docs/screenshots/admin-dashboard.png) | **Faculty Dashboard** ![Faculty Dashboard](./docs/screenshots/faculty-dashboard.png) |
+| **Student Attendance (with chart)** ![Student Attendance](./docs/screenshots/student-attendance-chart.png) | **Notices (real-time + AI summary)** ![Notices](./docs/screenshots/notices.png) |
 
 ---
 
